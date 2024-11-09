@@ -133,10 +133,45 @@ mvn test
 ```
 
 ## Changing MySQL Credentials
-To change the MySQL credentials, update the `application.properties` file located in `src/main/resources` with your MySQL database details:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/your_database_name
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+
+### Configuration Files
+
+This project uses two configuration files for managing application properties:
+
+1. **Shared Properties File**: `src/main/resources/application.properties`
+2. **Private Properties File**: `src/main/resources/application-private.properties`
+
+#### Shared Properties File
+
+The `application.properties` file contains shared configuration properties that are used across different environments. This file includes properties such as:
+
+```ini
+spring.application.name=BloggingPlatform
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 spring.jpa.hibernate.ddl-auto=update
+
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
 ```
+
+#### Private Properties File
+
+The `application-private.properties` file contains sensitive information such as database credentials. This file should not be committed to version control and is included in the `.gitignore` file to prevent accidental commits. Example content:
+
+```ini
+DB_URL=your_database_url
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+```
+
+#### Setting Up the Private Properties File
+
+1. **Create the `application-private.properties` file**: If it does not already exist, create the file in the `src/main/resources` directory.
+2. **Add your private properties**: Include your database URL, username, and password in this file.
+3. **Ensure it is ignored by Git**: The `.gitignore` file already includes an entry to ignore `application-private.properties`.
+
+By following these steps, you can manage your application's configuration securely and efficiently.
