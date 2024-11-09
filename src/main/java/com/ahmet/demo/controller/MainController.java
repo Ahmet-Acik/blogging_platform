@@ -1,5 +1,7 @@
 package com.ahmet.demo.controller;
 
+import com.ahmet.demo.dto.PostDTO;
+import com.ahmet.demo.dto.UserDTO;
 import com.ahmet.demo.model.User;
 import com.ahmet.demo.model.Post;
 import com.ahmet.demo.model.Comment;
@@ -44,15 +46,15 @@ public class MainController {
 
     @GetMapping("/users")
     @Operation(summary = "Get all users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUserDTOs();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{id}")
     @Operation(summary = "Get a user by ID")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        UserDTO user = userService.getUserDTOById(id);
         return ResponseEntity.ok(user);
     }
 
@@ -73,29 +75,29 @@ public class MainController {
     // Post endpoints
     @PostMapping("/posts")
     @Operation(summary = "Create a new post")
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post savedPost = postService.savePost(post);
+    public ResponseEntity<PostDTO> createPost(@RequestBody Post post) {
+        PostDTO savedPost = postService.savePost(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @GetMapping("/posts")
     @Operation(summary = "Get all posts")
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
+    public ResponseEntity<List<PostDTO>> getAllPosts() {
+        List<PostDTO> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/posts/{id}")
     @Operation(summary = "Get a post by ID")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        Post post = postService.getPostById(id);
+    public ResponseEntity<PostDTO> getPostById(@PathVariable Long id) {
+        PostDTO post = postService.getPostById(id);
         return ResponseEntity.ok(post);
     }
 
     @PutMapping("/posts/{id}")
     @Operation(summary = "Update a post by ID")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        Post updatedPost = postService.updatePost(id, post);
+    public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, @RequestBody Post post) {
+        PostDTO updatedPost = postService.updatePost(id, post);
         return ResponseEntity.ok(updatedPost);
     }
 

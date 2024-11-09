@@ -26,13 +26,13 @@ public class UserServiceIntegrationTest {
     private static final String EMAIL = "email";
 
     @LocalServerPort
-    private int port;
+    private int port; // Random port assigned by Spring Boot
 
-    private Long createdUserId;
+    private Long createdUserId; // ID of the user created during the test
 
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
+        RestAssured.port = port; // Set the port RestAssured should use
     }
 
     @AfterEach

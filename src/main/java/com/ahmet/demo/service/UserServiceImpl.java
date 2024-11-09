@@ -1,10 +1,11 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.dto.UserDTO;
+import com.ahmet.demo.mapper.MainMapper;
 import com.ahmet.demo.model.Post;
 import com.ahmet.demo.exception.ResourceNotFoundException;
 import com.ahmet.demo.model.User;
 import com.ahmet.demo.repository.UserRepository;
-import com.ahmet.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,6 +22,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MainMapper mainMapper;
 
     public User saveUser(User user) {
         // Add validation logic here
@@ -32,14 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Transactional
     public User updateUser(Long id, User user) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         // Update fields of the existing user
         existingUser.setUsername(user.getUsername());
@@ -62,9 +64,7 @@ public class UserServiceImpl implements UserService {
                     existingPosts.add(newPost);
                 } else {
                     // Update the existing post if necessary
-                    existingPosts.stream()
-                            .filter(post -> post.equals(newPost))
-                            .forEach(post -> post.updateFrom(newPost));
+                    existingPosts.stream().filter(post -> post.equals(newPost)).forEach(post -> post.updateFrom(newPost));
                 }
             }
         }
@@ -78,5 +78,18 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    public UserDTO convertToDto(User user) {
+        return mainMapper.userToUserDTO(user);
+    }
+
+    public List<UserDTO> getAllUserDTOs() {
+        return userRepository.findAll().stream().map(mainMapper::userToUserDTO).collect(Collectors.toList());
+    }
+
+    public UserDTO getUserDTOById(Long id) {
+        User user = getUserById(id);
+        return mainMapper.userToUserDTO(user);
     }
 }

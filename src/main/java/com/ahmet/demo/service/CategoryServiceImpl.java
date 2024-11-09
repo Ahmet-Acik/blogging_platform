@@ -1,5 +1,6 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.dto.CategoryDTO;
 import com.ahmet.demo.model.Category;
 import com.ahmet.demo.repository.CategoryRepository;
 import com.ahmet.demo.service.CategoryService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -44,4 +46,5 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }
+
 }

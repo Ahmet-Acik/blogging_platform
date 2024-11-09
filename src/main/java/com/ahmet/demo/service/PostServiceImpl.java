@@ -1,13 +1,14 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.dto.PostDTO;
+import com.ahmet.demo.mapper.MainMapper;
 import com.ahmet.demo.model.Post;
 import com.ahmet.demo.repository.PostRepository;
-import com.ahmet.demo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -15,27 +16,35 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private MainMapper mainMapper;
+
     @Override
-    public Post savePost(Post post) {
-        return postRepository.save(post);
+    public PostDTO savePost(Post post) {
+        Post savedPost = postRepository.save(post);
+        return mainMapper.postToPostDTO(savedPost);
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostDTO> getAllPosts() {
+        return postRepository.findAll().stream()
+                .map(mainMapper::postToPostDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Post getPostById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
-        return post.orElse(null);
+    public PostDTO getPostById(Long id) {
+        return postRepository.findById(id)
+                .map(mainMapper::postToPostDTO)
+                .orElse(null);
     }
 
     @Override
-    public Post updatePost(Long id, Post post) {
+    public PostDTO updatePost(Long id, Post post) {
         if (postRepository.existsById(id)) {
             post.setId(id);
-            return postRepository.save(post);
+            Post updatedPost = postRepository.save(post);
+            return mainMapper.postToPostDTO(updatedPost);
         }
         return null;
     }

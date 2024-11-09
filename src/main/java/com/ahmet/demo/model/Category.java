@@ -13,7 +13,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+
+    @Enumerated(EnumType.STRING)
+    private CategoryType name;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

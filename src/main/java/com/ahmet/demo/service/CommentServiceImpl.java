@@ -1,5 +1,6 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.dto.CommentDTO;
 import com.ahmet.demo.model.Comment;
 import com.ahmet.demo.repository.CommentRepository;
 import com.ahmet.demo.service.CommentService;
@@ -44,4 +45,5 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
     }
+
 }

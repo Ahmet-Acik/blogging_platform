@@ -1,12 +1,14 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.dto.PostDTO;
 import com.ahmet.demo.model.Post;
 import java.util.List;
 
+// PostService.java
 public interface PostService {
-    Post savePost(Post post);
-    List<Post> getAllPosts();
-    Post getPostById(Long id);
-    Post updatePost(Long id, Post post);
+    PostDTO savePost(Post post);
+    List<PostDTO> getAllPosts();
+    PostDTO getPostById(Long id);
+    PostDTO updatePost(Long id, Post post);
     void deletePost(Long id);
 }
