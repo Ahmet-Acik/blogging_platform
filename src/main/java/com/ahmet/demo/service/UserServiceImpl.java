@@ -1,5 +1,6 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.exception.ResourceNotFoundException;
 import com.ahmet.demo.model.User;
 import com.ahmet.demo.repository.UserRepository;
 import com.ahmet.demo.service.UserService;
@@ -15,33 +16,32 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
     public User saveUser(User user) {
+        // Add validation logic here
         return userRepository.save(user);
     }
 
-    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Override
     public User getUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    @Override
     public User updateUser(Long id, User user) {
-        if (userRepository.existsById(id)) {
-            user.setId(id);
-            return userRepository.save(user);
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
         }
-        return null;
+        user.setId(id);
+        return userRepository.save(user);
     }
 
-    @Override
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
         userRepository.deleteById(id);
     }
 }
