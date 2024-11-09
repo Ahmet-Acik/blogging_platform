@@ -1,17 +1,23 @@
 package com.ahmet.demo.service;
 
+import com.ahmet.demo.model.Post;
 import com.ahmet.demo.exception.ResourceNotFoundException;
 import com.ahmet.demo.model.User;
 import com.ahmet.demo.repository.UserRepository;
 import com.ahmet.demo.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -30,12 +36,41 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    @Transactional
     public User updateUser(Long id, User user) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        // Update fields of the existing user
+        existingUser.setUsername(user.getUsername());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(user.getPassword());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+
+        // Update the collection properly
+        Set<Post> existingPosts = existingUser.getPosts();
+        Set<Post> newPosts = user.getPosts();
+
+        if (newPosts != null) {
+            // Remove posts that are no longer present
+            existingPosts.removeIf(post -> !newPosts.contains(post));
+
+            // Add or update posts
+            for (Post newPost : newPosts) {
+                if (!existingPosts.contains(newPost)) {
+                    existingPosts.add(newPost);
+                } else {
+                    // Update the existing post if necessary
+                    existingPosts.stream()
+                            .filter(post -> post.equals(newPost))
+                            .forEach(post -> post.updateFrom(newPost));
+                }
+            }
         }
-        user.setId(id);
-        return userRepository.save(user);
+
+        logger.info("Updating user with id: {}", id);
+        return userRepository.save(existingUser);
     }
 
     public void deleteUser(Long id) {

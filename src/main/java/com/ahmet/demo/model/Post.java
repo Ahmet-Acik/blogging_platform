@@ -31,4 +31,16 @@ public class Post {
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    public void updateFrom(Post newPost) {
+        this.title = newPost.getTitle();
+        this.content = newPost.getContent();
+        this.createdAt = newPost.getCreatedAt();
+        this.updatedAt = newPost.getUpdatedAt();
+        this.user = newPost.getUser();
+        this.comments.clear();
+        this.comments.addAll(newPost.getComments());
+        this.categories.clear();
+        this.categories.addAll(newPost.getCategories());
+    }
 }
