@@ -11,6 +11,7 @@ import com.ahmet.demo.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class MainController {
     @Operation(summary = "Create a new user")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @GetMapping("/users")
@@ -74,7 +75,7 @@ public class MainController {
     @Operation(summary = "Create a new post")
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
         Post savedPost = postService.savePost(post);
-        return ResponseEntity.ok(savedPost);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @GetMapping("/posts")
@@ -110,7 +111,7 @@ public class MainController {
     @Operation(summary = "Create a new comment")
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         Comment savedComment = commentService.saveComment(comment);
-        return ResponseEntity.ok(savedComment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
     }
 
     @GetMapping("/comments")
@@ -146,7 +147,7 @@ public class MainController {
     @Operation(summary = "Create a new category")
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         Category savedCategory = categoryService.saveCategory(category);
-        return ResponseEntity.ok(savedCategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
     @GetMapping("/categories")
